@@ -1,0 +1,7 @@
+專案初始化
+npm init -y
+
+模組安裝
+npm install <mode.name>
+npm uninstall <mode.name>
+
