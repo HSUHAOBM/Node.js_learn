@@ -79,6 +79,11 @@ app.post('/sent', upload.single('file'), async function(req,res) {
 
     // 檔案
     if (req.file){
+      // 確認路徑
+      if (fs.existsSync("./static/pic/") == false) {
+        fs.mkdirSync("./static/pic/")
+        console.log('create pic')
+      }
       // get file
       let upload_file = req.file.buffer;
       // uuid
