@@ -1,0 +1,9 @@
+<h1>Todo</h1>
+
+<h2><%= results.rowCount %></2>
+
+<ul>
+    <% for(let i = 0; i < results.rows.length; i++) { %>
+      <li><%= results.rows[i].name %></li>
+    <% } %>
+</ul>
