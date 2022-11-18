@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        function promise(num) {
+        return new Promise((resolve, reject) => {
+            console.log('promise')
+            num ? resolve(`${num}, 成功`) : reject('失敗');
+        });
+        }
+
+        promise(3)
+            .then(success => {
+                console.log(success);
+                return promise(2);
+            })
+            .then(success => {
+                console.log(success);
+                return promise(1); // 這個階段會進入 catch
+            })
+            .then(success => {   // 由於上一個階段結果是 reject，所以此段不執行
+                console.log(success);
+                return promise(1);
+            })
+            .catch(fail => {
+                console.log(fail);
+            })
+
+    </script>
+</body>
+</html>

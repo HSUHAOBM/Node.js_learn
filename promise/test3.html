@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        // Promise API
+        // all -> 多個 Promise 行為同時執行，全部完成後統一回傳。
+        // race -> 多個 Promise 同時執行，但僅回傳第一個完成的。
+        // Promise.reject, Promise.resolve -> 定義 Fulfilled 或 Rejected 的 Promise 物件。
+
+        function a(num, time = 500) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+            num ? resolve(`${num}, 成功`) : reject('失敗');
+            }, time);
+        });
+        }
+
+        Promise.all([a(1), a(2), a(3, 5000)])
+        .then(res => {
+            console.log(res);
+        });
+        // ['1, 成功', '2, 成功', '3, 成功'] 5秒後回傳
+
+        Promise.race([a(1), a(2), a(3, 3000)]).then(res => {
+            console.log(res);
+        });
+        // 1, 成功 , 0.5秒後回傳
+
+        var result = Promise.resolve('result');
+        result.then(res => {
+        console.log('resolved', res); // 成功部分可以正確接收結果
+        }, res => {
+        console.log('rejected', res); // 失敗部分不會取得結果
+        });
+
+        var result = Promise.reject('result');
+        result.then(res => {
+        console.log(res);
+        }, res => {
+        console.log(res); // 只有此段會出現結果
+        });
+
+    </script>
+</body>
+</html>
