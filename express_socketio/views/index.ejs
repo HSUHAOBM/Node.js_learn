@@ -21,6 +21,7 @@
     // 斷線
     socket.on('disconnect', (reason) => {
         console.log(`disconnected due to ${reason}`);
+        location.href="/"
     });
     // 訊息
     socket.on("chat message", function(data) {
@@ -38,7 +39,6 @@
     })
     function leave_room() {
         socket.emit("left", {})
-        window.location.href = window.location.href
     }
     function broadcaset() {
         socket.emit("broadcast", "嗨,來找我")

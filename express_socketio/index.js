@@ -42,7 +42,6 @@ chat_space.on('connection', (socket) => {
 
   // 訊息傳送
   socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
     chat_space.to(room).emit('chat message', user + " : " + msg );
   });
 
@@ -51,14 +50,16 @@ chat_space.on('connection', (socket) => {
     console.log(session)
     session.destroy(()=>{
       chat_space.to(room).emit("chat message", user + " leave the room\n");
-      chat_space.to(session.id).disconnectSockets()
+      socket.disconnect()
     });
   });
 
+  // 斷開
   socket.on('disconnect', () => {
-    console.log(`disconnect: ${socket.id}`);
+    console.log(`disconnect`);
   });
 
+  // 廣播
   socket.on('broadcast', (msg) => {
     console.log(msg);
     chat_space.local.emit("chat message", user + ':' + msg + ' （在' + room + '房）\n');
