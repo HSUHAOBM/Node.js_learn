@@ -6,6 +6,9 @@ const multer = require("multer");
 const fs = require("fs-extra");
 // uuid
 const uuidv = require('uuid');
+// server log
+const morgan = require('morgan')
+
 
 // load env
 require("dotenv").config();
@@ -33,6 +36,8 @@ clinet.connect(async function(err){
 const express = require("express");
 // 建立物件
 const app = express();
+// server log
+app.use(morgan('combined'))
 // 靜態檔案
 app.use(express.static("static"));
 // 設定樣板引擎// 並樣板檔案資料夾
@@ -71,7 +76,7 @@ app.post('/sent', upload.single('file'), async function(req,res) {
     // console.log(req.body)
     let file_src = null;
     let message = null;
-    
+
     // 文字
     if (req.body.message){
       message = req.body.message;
