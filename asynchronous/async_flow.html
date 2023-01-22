@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callbacks、Promises 物件、Async/Await</title>
+    <script>
+        // 需求 2秒後 顯示結果
+        // 1 > undefined > 2
+        // 同步 向下執行
+        function add(n1, n2, delaytime){
+            setTimeout(function(){
+                console.log(2);
+                return n1 + n2;
+            }, delaytime)
+            console.log(1)
+        }
+        function test(){
+            let result = add(3, 4, 2000)
+            console.log(result)
+        }
+
+        // 使用 Callbacks 解決
+        //  1 > 2> 7
+        function add_callbacks(n1, n2, delaytime, Callback){
+            setTimeout(function(){
+                console.log(2);
+                Callback(n1 + n2);
+            }, delaytime)
+            console.log(1)
+        }
+        function test_Callbacks(){
+            add_callbacks(3, 4, 2000, function(result){
+                console.log(result)
+            })
+        }
+
+        // ====================
+        // 使用 Promise 物件 解決
+        // resolve >> then
+        // reject >> catch
+        function add_promises(n1, n2, delaytime){
+            return new Promise(function(resolve, reject){
+                setTimeout(function(){
+                    console.log(2);
+                    resolve(n1 + n2);
+                    reject(n1 + n2);
+                }, delaytime)
+            })
+        }
+        function test_promises(){
+            let promise = add_promises(3, 4, 2000)
+            promise.then(function(result){
+                console.log('來自 resolve',result)
+            }).catch(function(error){
+                console.log('來自 reject',error)
+            }).finally(function(){
+                console.log('--- End ---')
+            })
+        }
+
+        // ====================
+        // 使用 Async/Await
+        // 背後運作邏輯 = Promise (簡化)
+        function add_async_await(n1, n2, delaytime){
+            return new Promise(function(resolve, reject){
+                setTimeout(function(){
+                    console.log(2);
+                    resolve(n1 + n2);
+                }, delaytime)
+            })
+        }
+        async function test_async_await(){
+            let result = await add_async_await(3, 4, 2000);
+            console.log(result);
+
+            // 抓 reject
+            // try{
+            // }catch(e){
+            // }
+        }
+
+        // 常見使用
+        // 取得多資源後再執行
+        function add_promises_ex1(n1, n2, delaytime){
+            return new Promise(function(resolve, reject){
+                setTimeout(function(){
+                    resolve(n1 + n2);
+                }, delaytime);
+            })
+        }
+        function test_ex1(){
+            let result1 = add_promises_ex1(3, 4, 2000);
+            let result2 = add_promises_ex1(1, 1, 3000);
+            Promise.all([result1, result2]).then(function(results){
+                let answer = results.reduce(function(total, value){
+                    return total * value;
+                });
+                console.log(answer);
+            })
+        }
+        // 使用 Async/Await
+        // 較簡潔
+        async function test_ex2(){
+            let result1 = await add_promises_ex1(3, 4, 2000);
+            let result2 = await add_promises_ex1(1, 1, 3000);
+            let answer = result1 * result2
+            console.log(answer)
+        }
+
+    </script>
+</head>
+<body>
+    <h3>非同步基礎</h3>
+    <button onclick="test()"> 按鈕 </button>
+
+    <button onclick="test_Callbacks()"> 使用 Callbacks </button>
+
+    <button onclick="test_promises()"> 使用 Promises </button>
+
+    <button onclick="test_async_await()"> 使用 Async/Await </button>
+
+    <button onclick="test_ex1()"> 2次延遲加法後相乘 使用 Promises </button>
+
+    <button onclick="test_ex2()"> 2次延遲加法後相乘 使用 Async/Await </button>
+
+
+</body>
+</html>
