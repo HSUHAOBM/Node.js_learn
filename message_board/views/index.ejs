@@ -28,35 +28,48 @@
 </head>
 
 <body>
-    <h2>發表一篇圖文</h2>
-    <form action="/sent" method="post" enctype="multipart/form-data">
+    <script src="/socket.io/socket.io.js"></script>
+
+    <div style="display: flex; justify-content: space-evenly;">
+        <div style="width: 60%;">
+            <h2>發表一篇圖文</h2>
+            <form action="/sent" method="post" enctype="multipart/form-data">
+                <div>
+                    <label for="uptext " class="up text">文字訊息：</label>
+                    <input type="text" name="message"></div>
+                <div class="imgbox">
+                    <label for="upimage " class="up image ">圖片檔案：</label>
+                    <input type="file" name=file onchange="previewFile()" id="sentmessageimage" accept="image/gif, image/jpeg, image/png">
+                    <img src="" id="img" width="300px">
+                </div>
+                <button type="submit">送出</button>
+            </form>
+
+            <hr>
+
+            <div id="message"></div>
+            <h3>所有留言</h3>
+
+            <% for(let i=0;i<data.length;i++){ %>
+                <div className="messages">
+                    <%= data[i].message %>
+                </div>
+                <!-- <img class="messagesimage" src="./pic/3e4873ba-3366-4de4-b365-ba5b5dee6146.jpg"></img> -->
+                <img class="messagesimage" src = <%= data[i].file %>></img>
+                <hr>
+            <%}%>
+        </div>
         <div>
-            <label for="uptext " class="up text">文字訊息：</label>
-            <input type="text" name="message"></div>
-        <div class="imgbox">
-            <label for="upimage " class="up image ">圖片檔案：</label>
-            <input type="file" name=file onchange="previewFile()" id="sentmessageimage" accept="image/gif, image/jpeg, image/png">
-            <img src="" id="img" width="300px">
+            <div>chat</div>
+            <p>目前連線人數: <span id="connected-count">0</span></p>
+
+            <textarea name="" id="textbox" cols="30" rows="10"></textarea>
+            <div>
+                <input type="text" id="msg">
+            </div>
         </div>
-        <button type="submit">送出</button>
-    </form>
-
-    <hr>
-    <div id="message"></div>
-    <h3>所有留言</h3>
-
-    <% for(let i=0;i<data.length;i++){ %>
-        <div className="messages">
-            <%= data[i].message %>
-        </div>
-        <!-- <img class="messagesimage" src="./pic/3e4873ba-3366-4de4-b365-ba5b5dee6146.jpg"></img> -->
-        <img class="messagesimage" src = <%= data[i].file %>></img>
-
-        <hr>
-
-    <%}%>
+    </div>
     <script src="js/test_message.js"></script>
-
 
 </body>
 
