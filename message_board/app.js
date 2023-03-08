@@ -8,14 +8,20 @@ const mongo = require("mongodb");
 // load env
 require("dotenv").config();
 
+const http = require('http');
+const socketIO = require('socket.io');
+
 const url = process.env.mongodb_url;
 const clinet = new mongo.MongoClient(url);
 let db = null;
 
 // 建立物件
 const app = express();
-// server log
-app.use(morgan('combined'))
+const server = http.createServer(app);
+const io = socketIO(server);
+
+// // server log
+// app.use(morgan('combined'))
 
 // 靜態檔案
 app.use(express.static("static"));
@@ -41,11 +47,46 @@ clinet.connect(async function(err){
     db = clinet.db("learn_node")
     console.log("資料庫連線成功");
 
+    // 將 io 傳遞給路由
+    app.use((req, res, next) => {
+        req.io = io;
+        next();
+    });
+
     // 將路由與應用程式連接
     const indexRouter = require("./routes/index");
     app.use("/", indexRouter(db));
 
-    app.listen(3000, function() {
+    let connectedClients = 0;
+    // socket.io
+    io.on('connection', (socket) => {
+        connectedClients++;
+        console.log(`a user connected, total connected clients: ${connectedClients}`);
+        io.emit('connected clients', connectedClients);
+
+        socket.on('set nickname', (nickname) => {
+            socket.nickname = nickname;
+            io.emit('chat message' , nickname + ' join the room\r');
+
+        });
+
+        // 訊息傳送
+        socket.on('chat message', (msg) => {
+            io.emit('chat message',  socket.nickname + " : " + msg );
+        });
+
+        socket.on('disconnect', () => {
+            console.log(socket.nickname + 'disconnected');
+            connectedClients--;
+            console.log(`a user disconnected, total connected clients: ${connectedClients}`);
+            io.emit('connected clients', connectedClients);
+
+        });
+    });
+
+
+
+    server.listen(3000, function() {
         console.log("server is running, http://localhost:3000")
     });
 });
